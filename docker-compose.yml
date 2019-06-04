@@ -1,0 +1,36 @@
+version: '3.7'
+
+volumes:
+  nextcloud:
+  db:
+
+services:
+  db:
+    image: postgres:11
+    restart: on-failure
+    volumes:
+      - db:/var/lib/postgres/data
+    env_file:
+      - .db_env
+
+  app:
+    image: nextcloud:fpm
+    depends_on: 
+        - db
+    environment:
+        - POSTGRES_DB=db
+    volumes:
+      - nextcloud:/var/www/html
+    restart: on-failure
+    env_file:
+      - .db_env
+
+  web:
+    image: nginx
+    ports:
+      - 8080:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - nextcloud:/var/www/html
+
+    restart: on-failure
