@@ -23,7 +23,7 @@ services:
       - nextcloud:/var/www/html
     restart: on-failure
     env_file:
-      - .db_env
+      - .app_env
 
   web:
     image: nginx
