@@ -14,11 +14,12 @@ services:
       - .db_env
 
   app:
-    image: nextcloud:fpm
+    image: nextcloud:16-fpm
     depends_on: 
         - db
     environment:
         - POSTGRES_DB=db
+        - NEXTCLOUD_TRUSTED_DOMAINS=files.earth-strike.com
     volumes:
       - nextcloud:/var/www/html
     restart: on-failure
@@ -27,6 +28,8 @@ services:
 
   web:
     image: nginx
+    depends_on:
+        - app
     ports:
       - 8080:80
     volumes:
